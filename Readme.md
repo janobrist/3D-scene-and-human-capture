@@ -1,5 +1,5 @@
 # About
-This repository consists of a forked version of [EasyMocap](https://github.com/zju3dv/EasyMocap) with the goal to establish a pipeline that features the combination of 3D reconstruction of static scenes and capturing human motion in the same scene. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that combines both 3D reconstruction of static scenes and capturing human motion within the same scene. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
 
 # Installation
 ## 1. Installing Nerfstudio
@@ -28,19 +28,19 @@ python preprocessing.py --reconstruction-video path.. --cam-left path... --cam-r
 Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
 ```bash
 conda activate nerfstudio
-ns-process-data images --data data/test/custom4/ --output-dir data/test/ --matching-method exhaustive --num-downscales 1.0
+ns-process-data images --data data/reconstruction/img/ --output-dir data/reconstruction/ --matching-method exhaustive --num-downscales 1.0
 
 ```
 Use Nerfstudio to reconstruct 3D scene and export point-cloud:
 ```bash
-ns-train nerfacto --data path
-ns-export pointcloud --load-config outputs\unnamed\nerfacto\2023-05-26_082508/config.yml --output-dir exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1.2 -1 -1 --bounding-box-max 1 1 1 
+ns-train nerfacto --data data/reconstruction/
+ns-export pointcloud --load-config outputs/unnamed/nerfacto/{start_time}/config.yml --output-dir exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
 
 ```
-Use OpenOse to detect 2D keypoints:
+Use OpenPose to detect 2D keypoints (if you encounter memory issues reduce --highres parameter):
 ```bash
 conda activate easymocap
-scripts/preprocess/extract_video.py data/final/mocap/motion/ --openpose openpose/ --highres 0.7
+scripts/preprocess/extract_video.py data/mocap/ --openpose openpose/ --highres 1
 
 ```
 Create camera extrinsics from sparse colmap reconstruction:
@@ -50,19 +50,17 @@ python apps/calibration/read_colmap.py data/final/recon/colmap/sparse/0 .bin
 ```
 Use EasyMocap to generate 3D keypoints and SMPL body model:
 ```bash
-python apps/demo/mv1p.py test/ --out "test/output/smplx" --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
-python apps/demo/smpl_from_keypoints.py data/final/mocap/  --skel3d data/final/mocap/output//keypoints3d/ --out data/final/mocap/output/smpl/
+python apps/demo/mv1p.py data/mocap/ --out data/mocap/output/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
 
 ```
 Create .bvh file from SMPL body parameters (requires Blender 2.79):
 ```bash
-"{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- test/smpl_model --o test/output2/
+"{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- data/mocap/output/smpl/ --o data/mocap/output/blender/
 
 ```
 or visualize the 3D keypoints as a skeleton by converting them to point clouds:
 ```bash
-python convert2pcd.py
+python convert2pcd.py --input path --output path
 
 ```
-
-
+use animation.blend to visualize the point clouds (copy them in the collection and adjust number of frames).
