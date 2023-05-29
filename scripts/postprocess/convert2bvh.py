@@ -116,7 +116,6 @@ def apply_trans_pose_shape(trans, pose, shape, ob, arm_ob, obname, scene, cam_ob
     mrots, bsh = rodrigues2bshapes(pose)
 
     # set the location of the first bone to the translation parameter
-    arm_ob.pose.bones[obname+'_Pelvis'].location = trans
     arm_ob.pose.bones[obname+'_root'].location = trans
     arm_ob.pose.bones[obname +'_root'].keyframe_insert('location', frame=frame)
     # set the pose of each bone to the quaternion specified by pose
