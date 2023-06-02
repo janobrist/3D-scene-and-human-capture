@@ -59,29 +59,29 @@ python apps/calibration/read_colmap.py demo/data/reconstruction/colmap/sparse/0 
 ```
 Use EasyMocap to generate 3D keypoints and SMPL body model:
 ```bash
-python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/data/mocap/output/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
+python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/outputs/mocap/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
 
 ```
 either convert 3D keypoints or point cloud to align both outputs:
 ```bash
-python scripts/postprocess/transform_keypoints.py --data demo/data/mocap/output/keypoints3d/ --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/data/mocap/output/transformed_keypoints/
+python scripts/postprocess/transform_keypoints.py --data demo/outputs/mocap/keypoints3d/ --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/outputs/mocap/transformed_keypoints/
 
 ```
 ```bash
-python scripts/postprocess/transform_pcd.py --data demo/exports/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/exports/pcd/
+python scripts/postprocess/transform_pcd.py --data demo/outputs/reconstruction/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/outputs/pcd/
 
 ```
 
 Create .bvh file from SMPL body parameters (requires Blender 2.79):
 ```bash
-"{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- data/mocap/output/smpl/ --o data/mocap/output/blender/
+"{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- demo/outputs/mocap/smpl/ --o demo/outputs/mocap/blender/
 
 ```
 
 or visualize the 3D keypoints as a skeleton by converting them to point clouds (use --data demo/data/mocap/output/transformed_keypoints3d/ if keypoints were transformed before):
 
 ```bash
-python scripts/postprocess/convert2pcd.py --data demo/data/mocap/output/keypoints3d/ --out demo/data/mocap/output/pcd/
+python scripts/postprocess/convert2pcd.py --data demo/outputs/mocap/keypoints3d/ --out demo/outputs/mocap/pcd/
 
 ```
 use blender/animation.blend to visualize the point clouds (copy all point clouds into FlipBookCollection, hide all in FlipBookCollection, adjust number of frames to amount of point clouds).
