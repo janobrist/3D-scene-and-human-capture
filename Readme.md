@@ -11,6 +11,10 @@ To install nerfstudio, follow the instructions in the [installation guidelines](
 ## 2. Installing OpenPose
 Follow the installation guide from [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
 ## 3. Installing EasyMocap
+```bash
+git clone git@github.com:janobrist/3D-scene-and-human-capture.git
+
+```
 See the detailed installation instructions in the [Documentation](https://chingswy.github.io/easymocap-public-doc/install/install.html) of EasyMocap.
 # Demo
 Test all installations by using the following pipeline:
