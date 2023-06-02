@@ -21,7 +21,7 @@ Test all installations by using the following pipeline:
 
 Extract frames for pose estimation from 3D reconstruction and extrinsic videos:
 ```bash
-python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstruction/room.mov --motion demo/data/mocap/extrinsics/ --out demo/data/reconstruction/img/ --fps 3
+python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstruction/room.mov --motion demo/data/mocap/calibration/ --out demo/data/reconstruction/img/ --fps 3
 
 ```
 Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
