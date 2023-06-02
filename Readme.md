@@ -27,19 +27,29 @@ python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstr
 Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
 ```bash
 conda activate nerfstudio
+
+```
+```bash
 ns-process-data images --data demo/data/reconstruction/img/ --output-dir demo/data/reconstruction/ --matching-method exhaustive --num-downscales 1
 
 ```
 Use Nerfstudio to reconstruct 3D scene and export point-cloud:
 ```bash
 ns-train nerfacto --data demo/data/reconstruction/ --output-dir demo/outputs/
+
+```
+Export point cloud:
+```bash
 ns-export pointcloud --load-config demo/outputs/reconstruction/nerfacto/{start_time}/config.yml --output-dir demo/exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
 
 ```
-Use OpenPose to detect 2D keypoints (if you encounter memory issues reduce --highres parameter):
+Use OpenPose to detect 2D keypoints (if you encounter out of memory error, reduce highres parameter):
 ```bash
 conda activate easymocap
-python scripts/preprocess/extract_video.py demo/data/mocap/motion/ {path_to_openpose}/ --highres 1
+
+```
+```bash
+python scripts/preprocess/extract_video.py demo/data/mocap/motion/ --openpose {path_to_openpose}/ --highres 1
 
 ```
 Create camera extrinsics from sparse colmap reconstruction:
@@ -56,6 +66,8 @@ either convert 3D keypoints or point cloud to align both outputs:
 ```bash
 python scripts/postprocess/transform_keypoints.py --data demo/data/mocap/output/keypoints3d/ --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/data/mocap/output/transformed_keypoints/
 
+```
+```bash
 python scripts/postprocess/transform_pcd.py --data demo/exports/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/exports/pcd/
 
 ```
@@ -66,7 +78,7 @@ Create .bvh file from SMPL body parameters (requires Blender 2.79):
 
 ```
 
-or visualize the 3D keypoints as a skeleton by converting them to point clouds:
+or visualize the 3D keypoints as a skeleton by converting them to point clouds (use --data demo/data/mocap/output/keypoints3d/ if keypoints were transformed before):
 
 ```bash
 python scripts/postprocess/convert2pcd.py --data demo/data/mocap/output/keypoints3d/ --out demo/data/mocap/output/pcd/
