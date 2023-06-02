@@ -1,5 +1,5 @@
 # About
-This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
 <div align="center">
     <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/final.gif" width="100%">
     <br>
@@ -11,15 +11,7 @@ To install nerfstudio, follow the instructions in the [installation guidelines](
 ## 2. Installing OpenPose
 Follow the installation guide from [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
 ## 3. Installing EasyMocap
-```bash
-conda create --name easymocap -y python=3.9
-conda activate easymocap
-python -m pip install --upgrade pip
-```
-```bash
-git clone git@github.com:janobrist/3D-scene-and-human-capture.git
-cd 3D-scene-and-human-capture
-```
+See the detailed installation instructions in the [Documentation](https://chingswy.github.io/easymocap-public-doc/install/install.html) of EasyMocap.
 # Demo
 Test all installations by using the following pipeline:
 
