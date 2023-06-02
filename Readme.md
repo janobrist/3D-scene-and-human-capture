@@ -1,5 +1,5 @@
 # About
-This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For 3D reconstruction of the scene, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
 <div align="center">
     <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/final.gif" width="100%">
     <br>
@@ -27,25 +27,24 @@ python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstr
 Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
 ```bash
 conda activate nerfstudio
-cd demo
-ns-process-data images --data data/reconstruction/img/ --output-dir data/reconstruction/ --matching-method exhaustive --num-downscales 1.0
+ns-process-data images --data demo/data/reconstruction/img/ --output-dir demo/data/reconstruction/ --matching-method exhaustive --num-downscales 1
 
 ```
 Use Nerfstudio to reconstruct 3D scene and export point-cloud:
 ```bash
-ns-train nerfacto --data data/reconstruction/
-ns-export pointcloud --load-config outputs/unnamed/nerfacto/{start_time}/config.yml --output-dir exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
+ns-train nerfacto --data demo/data/reconstruction/ --output-dir demo/outputs/
+ns-export pointcloud --load-config demo/outputs/reconstruction/nerfacto/{start_time}/config.yml --output-dir demo/exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
 
 ```
 Use OpenPose to detect 2D keypoints (if you encounter memory issues reduce --highres parameter):
 ```bash
 conda activate easymocap
-scripts/preprocess/extract_video.py data/mocap/ --openpose openpose/ --highres 1
+python scripts/preprocess/extract_video.py demo/data/mocap/motion/ {path_to_openpose}/ --highres 1
 
 ```
 Create camera extrinsics from sparse colmap reconstruction:
 ```bash
-python apps/calibration/read_colmap.py data/final/recon/colmap/sparse/0 .bin
+python apps/calibration/read_colmap.py demo/data/final/recon/colmap/sparse/0 .bin --out demo/data/mocap/motion/
 
 ```
 Use EasyMocap to generate 3D keypoints and SMPL body model:
