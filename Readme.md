@@ -78,7 +78,7 @@ Create .bvh file from SMPL body parameters (requires Blender 2.79):
 
 ```
 
-or visualize the 3D keypoints as a skeleton by converting them to point clouds (use --data demo/data/mocap/output/keypoints3d/ if keypoints were transformed before):
+or visualize the 3D keypoints as a skeleton by converting them to point clouds (use --data demo/data/mocap/output/transformed_keypoints3d/ if keypoints were transformed before):
 
 ```bash
 python scripts/postprocess/convert2pcd.py --data demo/data/mocap/output/keypoints3d/ --out demo/data/mocap/output/pcd/
