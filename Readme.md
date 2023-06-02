@@ -40,7 +40,7 @@ ns-train nerfacto --data demo/data/reconstruction/ --output-dir demo/outputs/
 ```
 Export point cloud:
 ```bash
-ns-export pointcloud --load-config demo/outputs/reconstruction/nerfacto/{start_time}/config.yml --output-dir demo/exports/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
+ns-export pointcloud --load-config demo/outputs/reconstruction/nerfacto/{start_time}/config.yml --output-dir demo/outputs/reconstruction/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
 
 ```
 Use OpenPose to detect 2D keypoints (if you encounter out of memory error, reduce highres parameter):
@@ -68,7 +68,7 @@ python scripts/postprocess/transform_keypoints.py --data demo/outputs/mocap/keyp
 
 ```
 ```bash
-python scripts/postprocess/transform_pcd.py --data demo/outputs/reconstruction/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/outputs/pcd/
+python scripts/postprocess/transform_pcd.py --data demo/outputs/reconstruction/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/outputs/reconstruction/pcd/
 
 ```
 
