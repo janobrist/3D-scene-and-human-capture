@@ -21,13 +21,13 @@ Test all installations by using the following pipeline:
 
 Extract frames for pose estimation from 3D reconstruction and extrinsic videos:
 ```bash
-cd demo
-python preprocessing.py --reconstruction-video path.. --cam-left path... --cam-right...
+python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstruction/room.mov --motion demo/data/mocap/extrinsics/ --out demo/data/reconstruction/img/ --fps 3
 
 ```
 Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
 ```bash
 conda activate nerfstudio
+cd demo
 ns-process-data images --data data/reconstruction/img/ --output-dir data/reconstruction/ --matching-method exhaustive --num-downscales 1.0
 
 ```
