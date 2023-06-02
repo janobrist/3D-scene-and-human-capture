@@ -48,7 +48,7 @@ def extract_2d(openpose, image, keypoints, render, args):
         if os.name != 'nt':
             cmd = './build/examples/openpose/openpose.bin --image_dir {} --write_json {} --display 0'.format(image, keypoints)
         else:
-            cmd = 'bin\\OpenPoseDemo.exe --image_dir {} --write_json {} --display 0'.format(join(os.getcwd(),image), join(os.getcwd(),keypoints))
+            cmd = 'bin\\OpenPoseDemo.exe --image_dir {} --write_json {} --display 0'.format(join(os.getcwd(),image), join(os.getcwd(),keypoints)) #build\\x64\\Release\\OpenPoseDemo.exe
         if args.highres!=1:
             cmd = cmd + ' --net_resolution -1x{}'.format(int(16*((368*args.highres)//16)))
         if args.handface:
@@ -82,7 +82,7 @@ def create_annot_file(annotname, imgname):
     img = cv2.imread(imgname)
     height, width = img.shape[0], img.shape[1]
     imgnamesep = imgname.split(os.sep)
-    filename = os.sep.join(imgnamesep[imgnamesep.index('images'):])
+    filename = imgnamesep[2] #os.sep.join(imgnamesep[imgnamesep.index('images'):])
     annot = {
         'filename':filename,
         'height':height,

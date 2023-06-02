@@ -107,7 +107,7 @@ def main(data_path, output_path):
         # initialise a point cloud
         pcd = o3d.geometry.PointCloud()
 
-        file_path: Path = data_path / json_file
+        file_path: Path = data_path + json_file
 
         # Read keypoints data from the current JSON file
         with open(file_path, "r") as f:

@@ -6,14 +6,17 @@ import open3d as o3d
 import colorsys
 import argparse
 
+def read_json_as_dict(filename):
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    return data
 
 def main(data_path, transform_path, output_path):
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     ns_transform_path = f"{transform_path}dataparser_transforms.json"
-    with open(ns_transform_path, 'r') as file:
-        ns_trans_params = json.load(file)
+    ns_trans_params = read_json_as_dict(ns_transform_path)
 
 
     R_ns = np.vstack(
