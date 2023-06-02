@@ -5,6 +5,7 @@ import open3d as o3d
 import numpy as np
 from pathlib import Path
 import math
+import argparse
 
 
 def get_json_files(directory_path: Path) -> List[str]:
@@ -17,16 +18,6 @@ def get_json_files(directory_path: Path) -> List[str]:
     json_files.sort(key=lambda x: int(os.path.splitext(x)[0]))
 
     return json_files
-
-
-def set_paths() -> Tuple[Path, Path]:
-    # Specify paths - TODO: replace w/ your own paths
-    directory_path: Path = Path("scene_02_aligned/keypoints3d_nerfstudio")
-    output_path: Path = Path("scene_02_aligned/keypoints3d_nerfstudio_meshes")
-    assert directory_path.exists(), f"{directory_path} does not exist."
-    assert output_path.exists(), f"{output_path} does not exist."
-
-    return directory_path, output_path
 
 
 def sample_points_on_cylinder(start_point, end_point, radius=0.005, num_points=50):
@@ -74,8 +65,9 @@ def extend_pcd(skeleton_connections, keypoints, pcd):
             pcd.points.extend(cylinder_points)
 
 
-def main():
-    data_path, output_path = set_paths()
+def main(data_path, output_path):
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     json_files = get_json_files(data_path)
 
     # Create a list to store the keyframes for the animation
@@ -135,9 +127,15 @@ def main():
         extend_pcd(skeleton_connections, keypoints, pcd)
 
         pcd.paint_uniform_color([0, 0, 1])
-        o3d.io.write_point_cloud(f"{output_path}/pcd{counter}.ply", pcd)
+        o3d.io.write_point_cloud(f"{output_path}{counter}.ply", pcd)
         counter += 1
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data', type=str, default='demo/data/mocap/output/keypoints3d/',
+                        help="path to keypoints")
+    parser.add_argument('--out', type=str, default='demo/data/mocap/output/pcd/',
+                        help="output directory of all point-clouds")
+    args = parser.parse_args()
+    main(args.data, args.out)

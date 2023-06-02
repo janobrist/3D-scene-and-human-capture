@@ -4,33 +4,32 @@ import json
 import numpy as np
 import open3d as o3d
 import colorsys
+import argparse
 
-def read_json_as_dict(filename):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-    return data
 
-if __name__ == '__main__':
-    ns_transform_path = 'outputs/unnamed/nerfacto/2023-05-26_082508/dataparser_transforms.json'
-    mocap_kpts_dir = 'data/final/mocap/output/keypoints3d/'
+def main(data_path, transform_path, output_path):
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
-    output_dir = 'data/final/mocap/output/'
+    ns_transform_path = f"{transform_path}dataparser_transforms.json"
+    with open(ns_transform_path, 'r') as file:
+        ns_trans_params = json.load(file)
 
-    ns_trans_params = read_json_as_dict(ns_transform_path)
+
     R_ns = np.vstack(
         (ns_trans_params['transform'][0][:3], ns_trans_params['transform'][1][:3], ns_trans_params['transform'][2][:3]))
     t_ns = np.hstack(
         (ns_trans_params['transform'][0][3], ns_trans_params['transform'][1][3], ns_trans_params['transform'][2][3]))
     scale_ns = ns_trans_params['scale']
 
-    mocap_kpts_names = os.listdir(mocap_kpts_dir)
+    mocap_kpts_names = os.listdir(data_path)
     mocap_kpts_names.sort()
 
     mocap_kpts = []
     mocap_kpt_ids = []
 
     for name in mocap_kpts_names:
-        temp = read_json_as_dict(mocap_kpts_dir + name)
+        temp = read_json_as_dict(data_path + name)
         mocap_kpts.append(np.array(temp[0]['keypoints3d']))
         mocap_kpt_ids.append(temp[0]['id'])
 
@@ -49,15 +48,22 @@ if __name__ == '__main__':
         ns_kpts[frame, :, 3] = mocap_kpts[frame, :, 3]
 
 
-    ns_pts_dir = output_dir + 'keypoints3d_transformed/'
-    if not os.path.exists(ns_pts_dir):
-        os.makedirs(ns_pts_dir)
-
     for i in range(ns_kpts.shape[0]):
         kpts = ns_kpts[i, :, :]
         temp = {"id": mocap_kpt_ids[i], "keypoints3d": kpts.tolist()}
         fname = mocap_kpts_names[i]
 
-        with open(ns_pts_dir + fname, 'w') as f:
+        with open(output_path + fname, 'w') as f:
             json.dump([temp], f)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data', type=str, default='demo/data/mocap/output/keypoints3d/',
+                        help="path to keypoints")
+    parser.add_argument('--transform', type=str, help="path to dataparser_transforms.json")
+    parser.add_argument('--out', type=str, default='demo/data/mocap/output/transformed_keypoints/',
+                        help="output directory of transformed keypoints")
+    args = parser.parse_args()
+    main(args.data, args.transform, args.out)
+
 

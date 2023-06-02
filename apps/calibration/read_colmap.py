@@ -34,6 +34,7 @@ import sys
 import collections
 import numpy as np
 import struct
+import argparse
 import cv2
 
 CameraModel = collections.namedtuple(
@@ -471,10 +472,10 @@ class FileStorage(object):
                     self.fs.write('none', elem)
                 self.fs.write('none', ']')
 
-def main():
-    if len(sys.argv) != 3:
-        print("Usage: python read_model.py path/to/model/folder [.txt,.bin]")
-        return
+def main(output_folder):
+    # if len(sys.argv) != 3:
+    #     print("Usage: python read_model.py path/to/model/folder [.txt,.bin]")
+    #     return
 
     cameras, images, points3D = read_model(path=sys.argv[1], ext=sys.argv[2])
     import cv2
@@ -525,8 +526,16 @@ def main():
         if False:
             o3d.visualization.draw_geometries([pcd])
     from easymocap.mytools.camera_utils import write_camera
-    write_camera(cameras_new, sys.argv[1])
+    write_camera(cameras_new, output_folder)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('path', type=str,
+                        help='Input file or directory')
+    parser.add_argument('extension', type=str,
+                        help='Input file or directory')
+    parser.add_argument('--out', type=str, default='demo/data/reconstruction/img/',
+                        help="output directory of all images")
+    args = parser.parse_args()
+    main(args.out)

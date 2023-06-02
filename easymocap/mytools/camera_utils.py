@@ -146,20 +146,21 @@ def write_camera(camera, path):
     intri = FileStorage(intri_name, True)
     extri = FileStorage(extri_name, True)
     results = {}
-    camnames = [key_.split('.')[0] for key_ in camera.keys()]
+    camnames = [i+1 for i in range(len(camera))]
     intri.write('names', camnames, 'list')
     extri.write('names', camnames, 'list')
+    i = 1
     for key_, val in camera.items():
-        if key_ == 'basenames':
-            continue
+
         key = key_.split('.')[0]
-        intri.write('K_{}'.format(key), val['K'])
-        intri.write('dist_{}'.format(key), val['dist'])
+        intri.write('K_%s'%i, val['K'])
+        intri.write('dist_%s'%i, val['dist'])
         if 'Rvec' not in val.keys():
             val['Rvec'] = cv2.Rodrigues(val['R'])[0]
-        extri.write('R_{}'.format(key), val['Rvec'])
-        extri.write('Rot_{}'.format(key), val['R'])
-        extri.write('T_{}'.format(key), val['T'])
+        extri.write('R_%s'%i, val['Rvec'])
+        extri.write('Rot_%s'%i, val['R'])
+        extri.write('T_%s'%i, val['T'])
+        i+=1
 
 def camera_from_img(img):
     height, width = img.shape[0], img.shape[1]

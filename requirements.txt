@@ -8,3 +8,4 @@ termcolor
 chumpy
 mediapipe
 func_timeout
+open3d
