@@ -52,6 +52,14 @@ Use EasyMocap to generate 3D keypoints and SMPL body model:
 python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/data/mocap/output/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
 
 ```
+either convert 3D keypoints or point cloud to align both outputs:
+```bash
+python scripts/postprocess/transform_keypoints.py --data demo/data/mocap/output/keypoints3d/ --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/data/mocap/output/transformed_keypoints/
+
+python scripts/postprocess/transform_pcd.py --data demo/exports/pcd/point_cloud.ply --transform demo/outputs/reconstruction/nerfacto/{start_time}/ --out demo/exports/pcd/
+
+```
+
 Create .bvh file from SMPL body parameters (requires Blender 2.79):
 ```bash
 "{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- data/mocap/output/smpl/ --o data/mocap/output/blender/
@@ -61,7 +69,7 @@ Create .bvh file from SMPL body parameters (requires Blender 2.79):
 or visualize the 3D keypoints as a skeleton by converting them to point clouds:
 
 ```bash
-python convert2pcd.py --input path --output path
+python scripts/postprocess/convert2pcd.py --data demo/data/mocap/output/keypoints3d/ --out demo/data/mocap/output/pcd/
 
 ```
 use animation.blend to visualize the point clouds (copy them in the collection and adjust number of frames).
