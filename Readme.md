@@ -44,12 +44,12 @@ python scripts/preprocess/extract_video.py demo/data/mocap/motion/ {path_to_open
 ```
 Create camera extrinsics from sparse colmap reconstruction:
 ```bash
-python apps/calibration/read_colmap.py demo/data/final/recon/colmap/sparse/0 .bin --out demo/data/mocap/motion/
+python apps/calibration/read_colmap.py demo/data/reconstruction/colmap/sparse/0 .bin --out demo/data/mocap/motion/
 
 ```
 Use EasyMocap to generate 3D keypoints and SMPL body model:
 ```bash
-python apps/demo/mv1p.py data/mocap/ --out data/mocap/output/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
+python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/data/mocap/output/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
 
 ```
 Create .bvh file from SMPL body parameters (requires Blender 2.79):
