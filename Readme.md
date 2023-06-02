@@ -84,6 +84,6 @@ or visualize the 3D keypoints as a skeleton by converting them to point clouds (
 python scripts/postprocess/convert2pcd.py --data demo/data/mocap/output/keypoints3d/ --out demo/data/mocap/output/pcd/
 
 ```
-use animation.blend to visualize the point clouds (copy them in the collection and adjust number of frames).
+use blender/animation.blend to visualize the point clouds (copy all point clouds into FlipBookCollection, hide all in FlipBookCollection, adjust number of frames to amount of point clouds).
 
 <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/dynamic.gif" width="49%"/> <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/skeleton.gif" width="49%"/>
