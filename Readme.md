@@ -1,5 +1,9 @@
 # About
-This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that combines both 3D reconstruction of static scenes and capturing human motion within the same scene. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For the 3D reconstruction, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+<div align="center">
+    <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/final.gif" width="100%">
+    <br>
+</div>
 
 # Installation
 ## 1. Installing Nerfstudio
@@ -58,9 +62,13 @@ Create .bvh file from SMPL body parameters (requires Blender 2.79):
 "{path_to_blender}/blender.exe" -b -t 12 -P scripts/postprocess/convert2bvh.py -- data/mocap/output/smpl/ --o data/mocap/output/blender/
 
 ```
+
 or visualize the 3D keypoints as a skeleton by converting them to point clouds:
+
 ```bash
 python convert2pcd.py --input path --output path
 
 ```
 use animation.blend to visualize the point clouds (copy them in the collection and adjust number of frames).
+
+<img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/dynamic.gif" width="49%"/> <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/skeleton.gif" width="49%"/>
