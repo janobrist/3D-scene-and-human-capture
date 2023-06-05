@@ -1,5 +1,5 @@
 # About
-This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For 3D reconstruction of the scene, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) is used. 
+This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) [^EasyMocap] aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For 3D reconstruction of the scene, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) [^Tancik2023] is used. 
 <div align="center">
     <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/final.gif" width="100%">
     <br>
@@ -9,7 +9,7 @@ This repository contains a modified version of [EasyMocap](https://github.com/zj
 ## 1. Installing Nerfstudio
 To install nerfstudio, follow the instructions in the [installation guidelines](https://github.com/nerfstudio-project/nerfstudio0/blob/main/docs/quickstart/installation.md#dependencies).
 ## 2. Installing OpenPose
-Follow the installation guide from [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
+Follow the installation guide from [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) [^Cao2019].
 ## 3. Installing EasyMocap
 ```bash
 git clone git@github.com:janobrist/3D-scene-and-human-capture.git
@@ -24,7 +24,7 @@ Extract frames for pose estimation from 3D reconstruction and extrinsic videos:
 python scripts/preprocess/preprocess_data.py --reconstruction demo/data/reconstruction/room.mov --motion demo/data/mocap/calibration/ --out demo/data/reconstruction/img/ --fps 3
 
 ```
-Use [COLMAP](https://github.com/colmap/colmap) to determine camera extrinsic and instrinsic parameters:
+Use [COLMAP](https://github.com/colmap/colmap) [^Schoenberger2016] to determine camera extrinsic and instrinsic parameters:
 ```bash
 conda activate nerfstudio
 
@@ -84,6 +84,20 @@ or visualize the 3D keypoints as a skeleton by converting them to point clouds (
 python scripts/postprocess/convert2pcd.py --data demo/outputs/mocap/keypoints3d/ --out demo/outputs/mocap/pcd/
 
 ```
-use blender/animation.blend to visualize the point clouds (copy all point clouds into FlipBookCollection, hide all in FlipBookCollection, adjust number of frames to amount of point clouds).
+use blender/animation.blend [^FlipBook] to visualize the point clouds (copy all point clouds into FlipBookCollection, hide all in FlipBookCollection, adjust number of frames to amount of point clouds). For optimal visualization of the 3D reconstructed point-cloud we used the Blender point cloud visualizer add-on [^addon].
 
 <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/dynamic.gif" width="49%"/> <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/skeleton.gif" width="49%"/>
+
+## References
+
+[^Tancik2023]: Matthew Tancik et al. Nerfstudio: A modular framework for neural radiance field development. arXiv preprint arXiv:2302.04264, 2023
+
+[^Easymocap]: Easymocap - make human motion capture easier. Github, 2021
+
+[^addon]: Blender point cloud visualizer 2.0+. Github, 2023
+
+[^FlipBook]: Importing Static Point Cloud vs Animated Point Coud into Blender Geometry Nodes. YouTube, 2022
+
+[^Cao2019]: Zhe Cao et al. Openpose: Realtime multi-person 2d poseestimation using part affinity fields, 2019
+
+[^Schoenberger2016]: Johannes Lutz Schoenberger and Jan-Michael Frahm. Structure-from-Motion Revisited. In Conference on Computer Vision and Pattern Recognition (CVPR), 2016
