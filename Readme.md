@@ -43,7 +43,10 @@ Export point cloud:
 ns-export pointcloud --load-config demo/outputs/reconstruction/nerfacto/{start_time}/config.yml --output-dir demo/outputs/reconstruction/pcd/ --num-points 3000000 --remove-outliers True --estimate-normals False --use-bounding-box True --bounding-box-min -1 -1 -1 --bounding-box-max 1 1 1 
 
 ```
-Use OpenPose to detect 2D keypoints (if you encounter out of memory error, reduce highres parameter):
+Use OpenPose to detect 2D keypoints:
+
+Note: If you encounter "out of memory" errors, reduce high res parameter to value between 0 and 1. (This affects OpenPose keypoint extraction, see this [demo](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/01_demo.md#improving-memory-and-speed-but-decreasing-accuracy) and this [FAQ](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/b1cb2b69cf8c4c288921e48c37f339a64db26f58/doc/05_faq.md#out-of-memory-error) for more information)
+
 ```bash
 conda activate easymocap
 
@@ -55,7 +58,7 @@ python scripts/preprocess/extract_video.py demo/data/mocap/motion/ --openpose {p
 Create camera extrinsics from sparse colmap reconstruction:
 ```bash
 python apps/calibration/read_colmap.py demo/data/reconstruction/colmap/sparse/0 .bin --out demo/data/mocap/motion/
-
+python scripts/preprocess/format_extri_intri_files.py demo/data/mocap/motion/ --frame_numbers 1 2
 ```
 Use EasyMocap to generate 3D keypoints and SMPL body model:
 ```bash
