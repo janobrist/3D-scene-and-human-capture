@@ -60,6 +60,11 @@ Create camera extrinsics from sparse colmap reconstruction:
 python apps/calibration/read_colmap.py demo/data/reconstruction/colmap/sparse/0 .bin --out demo/data/mocap/motion/
 python scripts/preprocess/format_extri_intri_files.py demo/data/mocap/motion/ --frame_numbers 1 2
 ```
+Use EasyMocap to generate 3D keypoints ONLY (see instructions below for SMPL body model instructions):
+```bash
+python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/outputs/mocap/ --vis_det --vis_repro --body body25 --kpts_only
+```
+
 Use EasyMocap to generate 3D keypoints and SMPL body model:
 ```bash
 python apps/demo/mv1p.py demo/data/mocap/motion/ --out demo/outputs/mocap/ --vis_det --vis_repro --sub_vis 1 2 --body body25 --model smpl --gender neutral --vis_smpl
