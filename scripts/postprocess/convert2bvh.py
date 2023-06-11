@@ -115,9 +115,19 @@ def apply_trans_pose_shape(trans, pose, shape, ob, arm_ob, obname, scene, cam_ob
     # transform pose into rotation matrices (for pose) and pose blendshapes
     mrots, bsh = rodrigues2bshapes(pose)
 
+    # original code: uncomment two lines below
     # set the location of the first bone to the translation parameter
-    arm_ob.pose.bones[obname+'_root'].location = trans
-    arm_ob.pose.bones[obname +'_root'].keyframe_insert('location', frame=frame)
+    # arm_ob.pose.bones[obname+'_root'].location = trans
+    # arm_ob.pose.bones[obname +'_root'].keyframe_insert('location', frame=frame)
+
+    # edited code: next 4 lines
+    # set pelvis to translation, root to origin
+    arm_ob.pose.bones[obname+'_Pelvis'].location = trans
+    arm_ob.pose.bones[obname+'_root'].location = Vector((0, 0, 0.7))
+    # rotate root by -90 deg about x-axis to match pycocotools output
+    root_rotation_euler = Euler((math.radians(-90), 0, 0), 'XYZ')
+    arm_ob.pose.bones[obname+'_root'].rotation_quaternion = root_rotation_euler.to_quaternion()
+
     # set the pose of each bone to the quaternion specified by pose
     for ibone, mrot in enumerate(mrots):
         bone = arm_ob.pose.bones[obname+'_'+part_match['bone_%02d' % ibone]]

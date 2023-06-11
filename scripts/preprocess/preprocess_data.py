@@ -19,8 +19,9 @@ def extract_images_recon(video_path, output_folder, desired_fps):
     subprocess.call(command)
 def extract_images_motion(video_path, output_folder):
     i = 1
-    for file_name in os.listdir(video_path):
-        path = os.path.join(video_path, file_name)
+    video_path_sub = os.path.join(video_path, 'videos')
+    for file_name in os.listdir(video_path_sub):
+        path = os.path.join(video_path_sub, file_name)
 
         command = [
             'ffmpeg',

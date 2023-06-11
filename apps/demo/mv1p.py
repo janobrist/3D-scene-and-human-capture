@@ -3,7 +3,7 @@
   @ Author: Qing Shuai
   @ LastEditors: Qing Shuai
   @ LastEditTime: 2021-06-13 17:56:25
-  @ FilePath: /EasyMocap/apps/demo/mv1p.py
+  @ FilePath: /3D-scene-and-human-capture/apps/demo/mv1p.py
 '''
 from tqdm import tqdm
 from easymocap.smplmodel import check_keypoints, load_model, select_nf
@@ -12,6 +12,7 @@ from easymocap.pipeline import smpl_from_keypoints3d2d
 import os
 from os.path import join
 import numpy as np
+
 
 def check_repro_error(keypoints3d, kpts_repro, keypoints2d, P, MAX_REPRO_ERROR):
     square_diff = (keypoints2d[:, :, :2] - kpts_repro[:, :, :2])**2 
@@ -63,6 +64,7 @@ def mv1pmf_smpl(dataset, args, weight_pose=None, weight_shape=None):
     keypoints2d = np.stack(keypoints2d)
     bboxes = np.stack(bboxes)
     kp3ds = check_keypoints(kp3ds, 1)
+
     # optimize the human shape
     with Timer('Loading {}, {}'.format(args.model, args.gender), not args.verbose):
         body_model = load_model(gender=args.gender, model_type=args.model)
@@ -94,8 +96,11 @@ def mv1pmf_smpl(dataset, args, weight_pose=None, weight_shape=None):
 if __name__ == "__main__":
     from easymocap.mytools import load_parser, parse_parser
     from easymocap.dataset import CONFIG, MV1PMF
+
     parser = load_parser()
     parser.add_argument('--skel', action='store_true')
+    parser.add_argument('--kpts_only', action='store_true')
+    parser.add_argument('--skel_path_name', type=str, default='keypoints3d')
     args = parse_parser(parser)
     help="""
   Demo code for multiple views and one person:
@@ -106,7 +111,7 @@ if __name__ == "__main__":
 """.format(args.path, ', '.join(args.sub), args.out, 
     args.model, args.gender, args.body)
     print(help)
-    skel_path = join(args.out, 'keypoints3d')
+    skel_path = join(args.out, args.skel_path_name)
     dataset = MV1PMF(args.path, annot_root=args.annot, cams=args.sub, out=args.out,
         config=CONFIG[args.body], kpts_type=args.body,
         undis=args.undis, no_img=False, verbose=args.verbose)
@@ -114,5 +119,7 @@ if __name__ == "__main__":
 
     if args.skel or not os.path.exists(skel_path):
         mv1pmf_skel(dataset, check_repro=True, args=args)
-    mv1pmf_smpl(dataset, args)
+    if not args.kpts_only:
+        mv1pmf_smpl(dataset, args)
+    
     

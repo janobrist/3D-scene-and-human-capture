@@ -16,7 +16,9 @@ def main(data_path, transform_path, output_path):
     matrix[:, :3, 3] = points_tensor
 
     matrix[..., :, :] /= transformation['scale']
-    applied_transform1 = torch.tensor(transformation['transform'])
+    applied_transform1 = np.vstack((transformation['transform'][0], transformation['transform'][1], transformation['transform'][2]))
+    applied_transform1[:, 3] *= transformation['scale']
+    applied_transform1 = torch.tensor(applied_transform1)
     inv_transform1 = torch.linalg.inv(
         torch.cat(
             (
@@ -26,37 +28,7 @@ def main(data_path, transform_path, output_path):
             0,
         )
     )
-    applied_transform2 = torch.tensor([
-            [
-                0.0,
-                1.0,
-                0.0,
-                0.0
-            ],
-            [
-                1.0,
-                0.0,
-                0.0,
-                0.0
-            ],
-            [
-                -0.0,
-                -0.0,
-                -1.0,
-                -0.0
-            ]
-        ])
-    inv_transform2 = torch.linalg.inv(
-        torch.cat(
-            (
-                applied_transform2,
-                torch.tensor([[0, 0, 0, 1]], dtype=torch.double, device=applied_transform2.device),
-            ),
-            0,
-        )
-    )
     matrix = torch.einsum("ij,bjk->bik", inv_transform1, matrix)
-    #matrix = torch.einsum("ij,bjk->bik", inv_transform2, matrix)
     array = matrix[..., :3, 3].numpy()
     transformed_pcd = o3d.geometry.PointCloud()
     transformed_pcd.points = o3d.utility.Vector3dVector(array)

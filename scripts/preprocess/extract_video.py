@@ -14,8 +14,8 @@ import numpy as np
 
 mkdir = lambda x: os.makedirs(x, exist_ok=True)
 
-def extract_video(videoname, path, start, end, step):
-    base = os.path.basename(videoname).replace('.mp4', '')
+def extract_video(videoname, path, start, end, step, vid_ext):
+    base = os.path.basename(videoname).replace(vid_ext, '')
     if not os.path.exists(videoname):
         return base
     outpath = join(path, 'images', base)
@@ -46,7 +46,7 @@ def extract_2d(openpose, image, keypoints, render, args):
     if not skip:
         os.makedirs(keypoints, exist_ok=True)
         if os.name != 'nt':
-            cmd = './build/examples/openpose/openpose.bin --image_dir {} --write_json {} --display 0'.format(image, keypoints)
+            cmd = './build/examples/openpose/openpose.bin --image_dir {} --write_json {} --display 0'.format(join(os.getcwd(),image), join(os.getcwd(),keypoints))
         else:
             cmd = 'bin\\OpenPoseDemo.exe --image_dir {} --write_json {} --display 0'.format(join(os.getcwd(),image), join(os.getcwd(),keypoints)) #build\\x64\\Release\\OpenPoseDemo.exe
         if args.highres!=1:
@@ -234,6 +234,8 @@ if __name__ == "__main__":
         help='use to render the openpose 2d')
     parser.add_argument('--no2d', action='store_true',
         help='only extract the images')
+    parser.add_argument('--vid_ext', type=str, default='.mp4',
+        help='specify the video extension')
     parser.add_argument('--start', type=int, default=0,
         help='frame start')
     parser.add_argument('--end', type=int, default=10000,
@@ -253,12 +255,12 @@ if __name__ == "__main__":
         image_path = join(args.path, 'images')
         os.makedirs(image_path, exist_ok=True)
         subs_image = sorted(os.listdir(image_path))
-        subs_videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
+        subs_videos = sorted(glob(join(args.path, 'videos', '*{}'.format(args.vid_ext))))
         if len(subs_videos) > len(subs_image):
-            videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
+            videos = sorted(glob(join(args.path, 'videos', '*{}'.format(args.vid_ext))))
             subs = []
             for video in videos:
-                basename = extract_video(video, args.path, start=args.start, end=args.end, step=args.step)
+                basename = extract_video(video, args.path, start=args.start, end=args.end, step=args.step, vid_ext=args.vid_ext)
                 subs.append(basename)
         else:
             subs = sorted(os.listdir(image_path))
