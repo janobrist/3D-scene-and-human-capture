@@ -242,11 +242,6 @@ Yes. Due to limited computational resources, we were unable to test multi-person
 
 Yes. See [this](https://chingswy.github.io/easymocap-public-doc/install/install_smpl.html) for a list of supported models. Using SMPL-H/SMLP-X requires the generation of additional keypoints from OpenPose (see FAQ 1 above). Replace the flag `--body25` with `--bodyhand` or `--bodyhandface` (SMPL-H and SMPL-X, respectivitely) when calling the function `apps/demo/mv1p.py` to recreate the SMPL model. We were unable to try different body models due to limited computational resources. 
 
-### 5. Are there any other useful functions not included in the demo?
-
-Yes! The documentation for EasyMocap does not explain all of the functions it contains. ...
-
-
 ### 
 
 # References
