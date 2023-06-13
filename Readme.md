@@ -1,10 +1,10 @@
 # Contents
 
-- [About](https://github.com/janobrist/3D-scene-and-human-capture/master/Readme.md#About)
-- [Installation](https://github.com/janobrist/3D-scene-and-human-capture/master/Readme.md#Installation)
-- [Demo](https://github.com/janobrist/3D-scene-and-human-capture/master/Readme.md#Demo)
-- [FAQs](https://github.com/janobrist/3D-scene-and-human-capture/master/Readme.md#FAQs)
-- [References](https://github.com/janobrist/3D-scene-and-human-capture/master/Readme.md#References)
+- [About](#About)
+- [Installation](#Installation)
+- [Demo](#Demo)
+- [FAQs](#FAQs)
+- [References](#References)
 
 # About
 
