@@ -1,3 +1,11 @@
+# Contents
+
+- [About](https://github.com/janobrist/3D-scene-and-human-capture/edit/master/Readme.md#About)
+- [Installation](https://github.com/janobrist/3D-scene-and-human-capture/edit/master/Readme.md#Installation)
+- [Demo](https://github.com/janobrist/3D-scene-and-human-capture/edit/master/Readme.md#Demo)
+- [FAQs](https://github.com/janobrist/3D-scene-and-human-capture/edit/master/Readme.md#FAQs)
+- [References](https://github.com/janobrist/3D-scene-and-human-capture/edit/master/Readme.md#References)
+
 # About
 
 This repository contains a modified version of [EasyMocap](https://github.com/zju3dv/EasyMocap) [^EasyMocap] aimed at creating a seamless pipeline that correctly aligns captured human motion data in a 3D reconstructed model of the environment. For 3D reconstruction of the scene, [Nerfstudio](https://github.com/nerfstudio-project/nerfstudio) [^Tancik2023] is used. 
@@ -110,13 +118,13 @@ python scripts/postprocess/convert2pcd.py --data demo/outputs/mocap/keypoints3d/
 
 **Foreword:** EasyMocap trained its model for fitting SMPL parameters on data with real metric units. Since COLMAP and nerfstudio use Structure from Motion (SfM), their coordinate systems do not have real units. This extention of the pipeline is one method for estimating and applying a scaling factor to the COLMAP camera parameters in order to improve the results of EasyMocap's SMPL body reconstruction. The scaling factor is calculated as the ratio between the average limb length of the human in the COLMAP coordinate system and the average limb length of the human in the coordinate system generated using EasyMocap's native camera calibration procedure (detecting a chessboard of known size).
 
-### 4.1 Additional Requirements
+### 4.1. Additional Requirements
 
 - Follow [this](https://github.com/zju3dv/EasyMocap/blob/master/doc/installation.md#01-smpl-models) guide to download SMPL model and reproduce folder structure
     - For this demo, structure should follow: data > smlpx > smlp > SMLP_NEUTRAL.pkl
 - (Optional for .bvh) Follow [this](https://github.com/zju3dv/EasyMocap/blob/master/doc/02_output.md#export-to-bvh-format) guide, download SMPL_maya from [SMPL website](https://smpl.is.tue.mpg.de/download.php), and install [Blender-2.79a](https://download.blender.org/release/Blender2.79/)
 
-### 4.2.1 Calculate Camera Extrinsics (in metric units) using Calibration Chessboard
+### 4.2.1. Calculate Camera Extrinsics (in metric units) using Calibration Chessboard
 
 **Input:** Calibration videos
 
@@ -138,7 +146,7 @@ python apps/calibration/calib_extri.py demo/data/mocap/calibration --intri demo/
 
 ```
 
-### 4.2.2 Generate 3D keypoints ("EasyMocap native")
+### 4.2.2. Generate 3D keypoints ("EasyMocap native")
 
 **Input:** Mocap images, EasyMocap native camera extrinsics
 
@@ -157,7 +165,7 @@ python apps/demo/mv1p.py demo/data/mocap/motion_native_calib --out demo/outputs/
 
 ```
 
-### 4.2.3 Estimate COLMAP scaling factor, Scale COLMAP Extrinsics, Re-generate 3D keypoints
+### 4.2.3. Estimate COLMAP scaling factor, Scale COLMAP Extrinsics, Re-generate 3D keypoints
 
 **Input:** 3D keypoints (EasyMocap Native --and-- COLMAP)
 
@@ -175,7 +183,7 @@ python apps/demo/mv1p.py demo/data/mocap/motion_metric --out demo/outputs/mocap_
 
 ```
 
-### 4.2.4 Visualize Keypoints, Generate SMPL, Transform Point Cloud
+### 4.2.4. Visualize Keypoints, Generate SMPL, Transform Point Cloud
 
 **Input:** 3D keypoints (COLMAP aligned to metric)
 
@@ -210,9 +218,36 @@ python scripts/postprocess/calc_metric_scale_factor.py --input_dir demo/data/moc
 - rotate mesh by 90 degrees about X-axis
 - select mesh, shift-select .bvh armature, ctrl-P -> Armature Deform
 
-### 4.2.5 Results
+### 4.3. Results
 
 <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/dynamic.gif" width="49%"/> <img src="https://github.com/janobrist/3D-scene-and-human-capture/blob/master/demo/results/skeleton.gif" width="49%"/>
+
+# FAQs
+
+### 1. Can I run OpenPose indentently from EasyMocap?
+
+EasyMocap uses OpenPose to estimate 2D joint locations (keypoints), which it calls in `scripts/preprocess/preprocess/extract_video.py`. This function supports additionaly flags which are not included in the Demo, namely `--handface` for hand and face keypoint generation (currently separate calls to each functionality not supported) and `--render` to generate images with a 2D skeleton of the keypoint overlaid. Both functions increase computational resources significantly. 
+
+OpenPose has many more options available natively to improve its detections results (i.e. undistorting images before detection). To run OpenPose independently, call the function `convert_from_openpose()` in `scripts/preprocess/preprocess/extract_video.py` to format the keypoints for use in the EasyMocap pipeline.
+
+### 2. Can I use more than 2 cameras for capturing human motion?
+
+This pipeline supports any number of cameras (>=2), so long as they are time-synced. Include all videos in the same directory named `videos`, i.e. `demo/data/mocap/motion/videos`. Each camera should have a separate video with no human in the scene for the generatation of its extrinsic parameters. If using COLMAP to estimate these parameters, specify the index (`--frame_number`) of the images corresponding to each camera when calling  `scripts/preprocess/format_extri_intri_files.py` (see section 2 in the Demo above). This will properly format the `intri.yml` and `extri.yml` files required for the EasyMocap pipeline. 
+
+### 3. Can I detect more than one person in the scene?
+
+Yes. Due to limited computational resources, we were unable to test multi-person detection, but EasyMocap includes a separate function to triangulate 2D keypoints in scenes with multiple people. See `apps/demo/mvmp.py`.
+
+### 4. Can I use SMPL-H/SMLP-X or other body models?
+
+Yes. See [this](https://chingswy.github.io/easymocap-public-doc/install/install_smpl.html) for a list of supported models. Using SMPL-H/SMLP-X requires the generation of additional keypoints from OpenPose (see FAQ 1 above). Replace the flag `--body25` with `--bodyhand` or `--bodyhandface` (SMPL-H and SMPL-X, respectivitely) when calling the function `apps/demo/mv1p.py` to recreate the SMPL model. We were unable to try different body models due to limited computational resources. 
+
+### 5. Are there any other useful functions not included in the demo?
+
+Yes! The documentation for EasyMocap does not explain all of the functions it contains. ...
+
+
+### 
 
 # References
 
