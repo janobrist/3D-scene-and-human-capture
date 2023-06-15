@@ -224,7 +224,7 @@ python scripts/postprocess/calc_metric_scale_factor.py --input_dir demo/data/moc
 
 # FAQs
 
-### 1. Can I run OpenPose indentently from EasyMocap?
+### 1. Can I run OpenPose independently from EasyMocap?
 
 EasyMocap uses OpenPose to estimate 2D joint locations (keypoints), which it calls in `scripts/preprocess/preprocess/extract_video.py`. This function supports additionaly flags which are not included in the Demo, namely `--handface` for hand and face keypoint generation (currently separate calls to each functionality not supported) and `--render` to generate images with a 2D skeleton of the keypoint overlaid. Both functions increase computational resources significantly. 
 
